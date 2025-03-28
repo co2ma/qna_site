@@ -1,0 +1,33 @@
+{% extends 'qa/base.html' %}
+{% block content %}
+<h2>{{ question.title }}</h2>
+<p>{{ question.content }}</p>
+<p><small>By {{ question.author.username }} | 작성일자: {{ question.created_at }}
+</small></p>
+
+<hr>
+<h4>답변들</h4>
+<ul class="list-group mb-4">
+    {% for answer in question.answers.all %}
+        <li class="list-group-item">
+            {{ answer.content }}<br>
+            <small class="text-muted">— {{ answer.author.username }} | 작성일자: {{ answer.created_at|date:"Y-m-d H:i" }}</small>
+        </li>
+    {% empty %}
+    <li class="list-group-item">아직 답변이 없습니다.</li>
+    {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+<h5>답변 작성하기</h5>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <textarea name="content" class="form-control" rows="4" placeholder="여기에 답변을 입력하세요..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">답변 입력</button>
+</form>
+{% else %}
+<p><a href="{% url 'login' %}">로그인</a> 하여 답변을 입력하세요.</p>
+{% endif %}
+{% endblock %}
